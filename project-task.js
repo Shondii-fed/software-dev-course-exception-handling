@@ -49,25 +49,38 @@ function getAdoptionFee(animalName) {
 // Main program
 console.log("Welcome to the Pet Shelter System");
 while (true) {
-    let action = readlineSync.question("Choose an action: 'add', 'fee', or 'exit': ").toLowerCase();
-    if (action === "exit") {
-        console.log("Goodbye!");
-        break;
-    }
+    // This is my catchall which then resets the program to the beginning.
     try {
+        let action = readlineSync.question("Choose an action: 'add', 'fee', or 'exit': ").toLowerCase();
+        if (action === "exit") {
+            console.log("Goodbye!");
+            break;
+        }
         if (action === "add") {
             let animal = readlineSync.question("Enter the animal's name: ");
-            // If fee is entered incorrectly, it shows the error and moves on.
             let fee = Number(readlineSync.question("Enter the adoption fee: "));
-            addAnimal(animal, fee);
-            console.log(`${animal} added with a fee of $${fee}.`);
+            // This will catch if the animal name is invalid.
+            try {
+                addAnimal(animal, fee);
+                console.log(`${animal} added with a fee of $${fee}.`);
+            } catch (err) {
+                console.log("Invalid animal name.", err.message)
+            }
         } else if (action === "fee") {
-            // If the animal is not found, its throws the error and continues on.
             let animal = readlineSync.question("Enter the animal's name to find its adoption fee: ");
+            // This will catch if animal is not found in the array to retrieve its fee.
+            try {
+                let fee = getAdoptionFee(animal);
+                console.log(`${animal}'s adoption fee is $${fee}.`);
+            } catch (err) {
+                console.log("Animal not found.", err.message);
+            }
             console.log(`${animal}'s adoption fee is $${getAdoptionFee(animal)}.`);
-        } 
+        } else {
+            console.error("Invalid action. Please choose 'add', 'fee', or 'exit'.")
+        }
     } catch (err) {
-        console.error("Invalid action. Please choose 'add', 'fee', or 'exit'.")
+        console.log("I'm sorry. There was an issue. Restarting...", err.message);
     }
 }
 
